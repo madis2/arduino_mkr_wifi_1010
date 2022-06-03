@@ -1,7 +1,7 @@
 #include <WiFiNINA.h>
 
-char ssid[] = "yes!";
-char pass[] = "itsaprankbro";
+char ssid[] = "wifi nimi";
+char pass[] = "wifi parool";
 
 int status = WL_IDLE_STATUS;
 
