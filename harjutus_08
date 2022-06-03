@@ -1,0 +1,41 @@
+#include <WiFiNINA.h>
+
+char ssid[] = "yes!";
+char pass[] = "itsaprankbro";
+
+int status = WL_IDLE_STATUS;
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial);
+  
+  //üritame võrgule ligi saada
+  while (status != WL_CONNECTED) {
+    Serial.print("Ühendan võrguga WPA SSID: ");
+    Serial.println(ssid);
+    //Võrku ühendamine:
+    status = WiFi.begin(ssid, pass);
+	//Kontroll, kui ei leia SSID või parool vale
+    if (status == 4) {
+      Serial.println("Ei leia võrku");
+    } else if (status == 6) {
+      Serial.println("Parool vale");
+    }
+    //Anna aega ühendamiseks
+    delay(5000);
+  }
+  Serial.println("Ühendus olemas...");
+  //Võrgu seaded
+  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.subnetMask());
+  Serial.println(WiFi.gatewayIP());
+}
+
+void loop () {
+  String host = "www.metshein.com";
+  Serial.print("pinging ");
+  Serial.print(host);
+  Serial.print(" ");
+  Serial.print(WiFi.ping(host));
+  Serial.println(" ms");
+}
