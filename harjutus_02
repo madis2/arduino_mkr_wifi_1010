@@ -1,0 +1,69 @@
+  //Harjutus 02.2
+//Sensori väärtuste kirjutamine SD-kaardile
+
+#include <Arduino_MKRENV.h>
+#include <SPI.h>
+#include <SD.h>
+
+//SD-kaardi port D4
+const int SD_PIN = 4;
+
+//Faili objekti loomine
+File andmefail;
+
+void setup() {
+  
+  pinMode(1, OUTPUT);
+  pinMode(2, OUTPUT);
+  
+  //Jadamonitori kontroll
+  Serial.begin(9600);
+  while (!Serial);
+
+  //Laiendusplaadi kontroll
+  if (!ENV.begin()) {
+    Serial.println("Probleem MKR ENV laiendusplaadiga!");
+    while (1);
+    digitalWrite(2, HIGH);
+  }
+  
+  //SPI käivitamine
+  SPI.begin();
+  delay(100);
+
+  //SD-kaardi kontroll
+  if(!SD.begin(SD_PIN)) {
+    Serial.println("Probleem SD kaardiga!");
+    while (1);
+    digitalWrite(2, HIGH);
+  }
+
+  //Logifaili loomine
+  andmefail = SD.open("log.csv", FILE_WRITE);
+  delay(1000);
+
+  //Veeru pealkirjad
+  andmefail.println("temp");
+
+  //Salvestame ja sulgeme faili
+  andmefail.close();
+}
+
+void loop() {
+  
+  digitalWrite(1, HIGH);
+  
+  //Faili avamine
+  andmefail = SD.open("log.csv", FILE_WRITE);
+  delay(1000);
+  
+  //Loe sensori väärtust
+  float temp    = ENV.readTemperature();
+
+  //Salvestame tulemused
+  andmefail.print(temp);
+
+  
+  andmefail.close();
+  delay(1000);
+}
